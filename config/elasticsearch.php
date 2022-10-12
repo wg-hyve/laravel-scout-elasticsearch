@@ -6,6 +6,7 @@ return [
     'password' => env('ELASTICSEARCH_PASSWORD'),
     'cloud_id' => env('ELASTICSEARCH_CLOUD_ID'),
     'api_key' => env('ELASTICSEARCH_API_KEY'),
+    'backend_type' => env('SCOUT_SEARCH_BACKEND', 'elasticsearch'),
     'indices' => [
         'mappings' => [
             'default' => [

@@ -2,7 +2,8 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs;
 
-use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\Client as ElasticsearchClient;
+use OpenSearch\Client as OpenSearchClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
 use Matchish\ScoutElasticSearch\ProgressReportable;
@@ -30,9 +31,9 @@ final class Import
     }
 
     /**
-     * @param  Client  $elasticsearch
+     * @param  ElasticsearchClient|OpenSearchClient  $elasticsearch
      */
-    public function handle(Client $elasticsearch): void
+    public function handle(ElasticsearchClient|OpenSearchClient $elasticsearch): void
     {
         $stages = $this->stages();
         $estimate = $stages->sum->estimate();

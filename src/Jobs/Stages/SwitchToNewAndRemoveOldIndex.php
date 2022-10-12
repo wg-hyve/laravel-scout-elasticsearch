@@ -2,7 +2,8 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
-use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\Client as ElasticsearchClient;
+use OpenSearch\Client as OpenSearchClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Get;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Update;
@@ -32,7 +33,7 @@ final class SwitchToNewAndRemoveOldIndex
         $this->index = $index;
     }
 
-    public function handle(Client $elasticsearch): void
+    public function handle(ElasticsearchClient|OpenSearchClient $elasticsearch): void
     {
         $source = $this->source;
         $params = Get::anyIndex($source->searchableAs());

@@ -48,6 +48,14 @@ class Storage
     }
 
     /**
+     * @return string
+     */
+    public function backendType(): string
+    {
+        return $this->loadConfig('backend_type');
+    }
+
+    /**
      * @return ?string
      */
     public function elasticCloudId(): ?string
