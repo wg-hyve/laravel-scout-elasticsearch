@@ -86,6 +86,13 @@ ELASTICSEARCH_HOST=host:port,host:port
 And publish config example for elasticsearch  
 `php artisan vendor:publish --tag config`
 
+Basic OpenSearch support is provided. Add to your .env file OpenSearch as backend.
+
+Default is ElasticSearch
+```
+SCOUT_SEARCH_BACKEND=opensearch
+```
+
 ## :bulb: Usage
 
 > **Note:** This package adds functionalities to [Laravel Scout](https://github.com/laravel/scout), and for this reason, we encourage you to **read the Scout documentation first**. Documentation for Scout can be found on the [Laravel website](https://laravel.com/docs/scout).
