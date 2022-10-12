@@ -2,8 +2,7 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
-use Elastic\Elasticsearch\Client as ElasticsearchClient;
-use OpenSearch\Client as OpenSearchClient;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Get as GetAliasParams;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Delete as DeleteIndexParams;
@@ -27,7 +26,7 @@ final class CleanUp
         $this->source = $source;
     }
 
-    public function handle(ElasticsearchClient|OpenSearchClient $elasticsearch): void
+    public function handle(ProxyClient $elasticsearch): void
     {
         $source = $this->source;
         $params = GetAliasParams::anyIndex($source->searchableAs());

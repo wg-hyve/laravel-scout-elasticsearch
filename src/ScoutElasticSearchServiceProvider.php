@@ -9,7 +9,7 @@ use Laravel\Scout\EngineManager;
 use Laravel\Scout\ScoutServiceProvider;
 use Matchish\ScoutElasticSearch\Console\Commands\FlushCommand;
 use Matchish\ScoutElasticSearch\Console\Commands\ImportCommand;
-use Matchish\ScoutElasticSearch\Creator\Backend;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\Engines\ElasticSearchEngine;
 use Matchish\ScoutElasticSearch\Searchable\DefaultImportSourceFactory;
 use Matchish\ScoutElasticSearch\Searchable\ImportSourceFactory;
@@ -24,7 +24,7 @@ final class ScoutElasticSearchServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'scout');
 
         $this->app->make(EngineManager::class)->extend(ElasticSearchEngine::class, function () {
-            $elasticsearch = app(Backend::load()->clientClass());
+            $elasticsearch = app(ProxyClient::class);
 
             return new ElasticSearchEngine($elasticsearch);
         });

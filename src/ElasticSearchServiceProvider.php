@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Matchish\ScoutElasticSearch;
 
 use Illuminate\Support\ServiceProvider;
-use Matchish\ScoutElasticSearch\Creator\Backend;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
+use Matchish\ScoutElasticSearch\Creator\ProxyClientBuilder;
 use Matchish\ScoutElasticSearch\ElasticSearch\Config\Config;
 use Matchish\ScoutElasticSearch\ElasticSearch\EloquentHitsIteratorAggregate;
 use Matchish\ScoutElasticSearch\ElasticSearch\HitsIteratorAggregate;
@@ -19,8 +20,8 @@ final class ElasticSearchServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/elasticsearch.php', 'elasticsearch');
 
-        $this->app->bind(Backend::load()->clientClass(), function () {
-            $clientBuilder = Backend::load()->clientBuilder()->setHosts(Config::hosts());
+        $this->app->bind(ProxyClient::class, function () {
+            $clientBuilder = ProxyClientBuilder::create()->setHosts(Config::hosts());
             if ($user = Config::user()) {
                 $clientBuilder->setBasicAuthentication($user, Config::password());
             }
@@ -54,6 +55,6 @@ final class ElasticSearchServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [Backend::load()->clientClass()];
+        return [ProxyClient::class];
     }
 }

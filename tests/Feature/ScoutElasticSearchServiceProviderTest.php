@@ -3,9 +3,9 @@
 namespace Matchish\ScoutElasticSearch;
 
 use Elastic\Elasticsearch\Client as ElasticsearchClient;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use OpenSearch\Client as OpenSearchClient;
 use Elastic\Transport\Exception\NoNodeAvailableException;
-use Matchish\ScoutElasticSearch\Creator\Backend;
 use Tests\TestCase;
 
 class ScoutElasticSearchServiceProviderTest extends TestCase
@@ -35,7 +35,7 @@ class ScoutElasticSearchServiceProviderTest extends TestCase
     public function test_provides()
     {
         $provider = new ElasticSearchServiceProvider($this->app);
-        $this->assertEquals([Backend::load()->clientClass()], $provider->provides());
+        $this->assertEquals([ProxyClient::class], $provider->provides());
     }
 
     public function test_config_with_username()
@@ -44,9 +44,9 @@ class ScoutElasticSearchServiceProviderTest extends TestCase
         $this->app['config']->set('elasticsearch.user', 'elastic');
         $this->app['config']->set('elasticsearch.password', 'pass');
         $provider = new ElasticSearchServiceProvider($this->app);
-        $this->assertEquals([Backend::load()->clientClass()], $provider->provides());
-        /** @var ElasticsearchClient|OpenSearchClient $client */
-        $client = $this->app[Backend::load()->clientClass()];
+        $this->assertEquals([ProxyClient::class], $provider->provides());
+        /** @var ProxyClient $client */
+        $client = $this->app[ProxyClient::class];
         try {
             $client->info();
         } catch (NoNodeAvailableException $e) {
@@ -61,9 +61,9 @@ class ScoutElasticSearchServiceProviderTest extends TestCase
         $this->app['config']->set('elasticsearch.api_key', '123456');
         $this->app['config']->set('elasticsearch.user', null);
         $provider = new ElasticSearchServiceProvider($this->app);
-        $this->assertEquals([Backend::load()->clientClass()], $provider->provides());
-        /** @var ElasticsearchClient|OpenSearchClient $client */
-        $client = $this->app[Backend::load()->clientClass()];
+        $this->assertEquals([ProxyClient::class], $provider->provides());
+        /** @var ProxyClient $client */
+        $client = $this->app[ProxyClient::class];
         $this->assertEquals('ApiKey 123456', $client->getTransport()->getHeaders()['Authorization']);
         $this->assertEquals('4de46ced8d8d459696e544fe5f32b999.eu-central-1.aws.cloud.es.io', $client->getTransport()->getNodePool()->nextNode()->getUri()->getHost());
     }

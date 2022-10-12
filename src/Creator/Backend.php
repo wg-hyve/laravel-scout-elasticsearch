@@ -26,4 +26,9 @@ class Backend
     {
         return $this->creator->clientBuilder();
     }
+
+    public function clientBuilderClass(): string
+    {
+        return $this->creator->clientBuilderClass();
+    }
 }

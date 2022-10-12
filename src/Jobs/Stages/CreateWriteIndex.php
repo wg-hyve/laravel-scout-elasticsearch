@@ -2,8 +2,7 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
-use Elastic\Elasticsearch\Client as ElasticsearchClient;
-use OpenSearch\Client as OpenSearchClient;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\DefaultAlias;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Create;
@@ -34,7 +33,7 @@ final class CreateWriteIndex
         $this->index = $index;
     }
 
-    public function handle(ElasticsearchClient|OpenSearchClient $elasticsearch): void
+    public function handle(ProxyClient $elasticsearch): void
     {
         $source = $this->source;
         $this->index->addAlias(new WriteAlias(new DefaultAlias($source->searchableAs())));

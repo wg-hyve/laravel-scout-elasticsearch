@@ -2,9 +2,7 @@
 
 namespace Tests;
 
-use Elastic\Elasticsearch\Client as ElasticsearchClient;
-use OpenSearch\Client as OpenSearchClient;
-use Matchish\ScoutElasticSearch\Creator\Backend;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 
 /**
  * Class IntegrationTestCase.
@@ -12,7 +10,7 @@ use Matchish\ScoutElasticSearch\Creator\Backend;
 class IntegrationTestCase extends TestCase
 {
     /**
-     * @var ElasticsearchClient|OpenSearchClient
+     * @var ProxyClient
      */
     protected $elasticsearch;
 
@@ -23,7 +21,7 @@ class IntegrationTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->elasticsearch = $this->app->make(Backend::load()->clientClass());
+        $this->elasticsearch = $this->app->make(ProxyClient::class);
 
         $this->elasticsearch->indices()->delete(['index' => '_all']);
     }

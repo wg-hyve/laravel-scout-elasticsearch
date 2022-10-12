@@ -4,7 +4,7 @@ namespace Tests\Unit\Engines;
 
 use App\Product;
 use Laravel\Scout\Builder;
-use Matchish\ScoutElasticSearch\Creator\Backend;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\Engines\ElasticSearchEngine;
 use Tests\TestCase;
 
@@ -12,7 +12,7 @@ class ElasticSearchEngineTest extends TestCase
 {
     public function test_map_ids()
     {
-        $sut = new ElasticSearchEngine(app(Backend::load()->clientClass()));
+        $sut = new ElasticSearchEngine(app(ProxyClient::class));
         $ids = $sut->mapIds(['hits' => ['hits' => [['_id' => 1], ['_id' => 15]]]]);
 
         $this->assertEquals([1, 15], $ids->all());
@@ -27,7 +27,7 @@ class ElasticSearchEngineTest extends TestCase
 
             return $query;
         });
-        $engine = new ElasticSearchEngine(app(Backend::load()->clientClass()));
+        $engine = new ElasticSearchEngine(app(ProxyClient::class));
         $engine->map($builder, [
             'hits' => [
                 'hits' => [

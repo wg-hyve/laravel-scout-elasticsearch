@@ -45,4 +45,15 @@ enum BackendType
             self::ELASTICSEARCH => ElasticsearchClientBuilder::create(),
         };
     }
+
+    /**
+     * @return string
+     */
+    public function clientBuilderClass(): string
+    {
+        return match ($this) {
+            self::OPENSEARCH => OpenSearchClientBuilder::class,
+            self::ELASTICSEARCH => ElasticsearchClientBuilder::class,
+        };
+    }
 }
