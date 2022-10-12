@@ -1,7 +1,21 @@
 <?php
 
 /**
- * @method getTransport()
+ * @method setHttpClient($httpClient)
+ * @method setAsyncHttpClient($asyncHttpClient)
+ * @method setLogger($logger)
+ * @method setNodePool($nodePool)
+ * @method setHosts(array $hosts)
+ * @method setApiKey(string $apiKey, string $id = null)
+ * @method setBasicAuthentication(string $username, string $password)
+ * @method setElasticCloudId(string $cloudId)
+ * @method setRetries(int $retries)
+ * @method setSSLCert(string $cert, string $password = null)
+ * @method setCABundle(string $cert)
+ * @method setSSLKey(string $key, string $password = null)
+ * @method setSSLVerification(bool $value = true)
+ * @method setElasticMetaHeader(bool $value = true)
+ * @method setHttpClientOptions(array $options)
  */
 
 namespace Matchish\ScoutElasticSearch\Creator;
