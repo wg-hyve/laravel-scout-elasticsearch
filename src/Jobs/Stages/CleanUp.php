@@ -2,6 +2,7 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Get as GetAliasParams;
@@ -31,7 +32,7 @@ final class CleanUp
         $source = $this->source;
         $params = GetAliasParams::anyIndex($source->searchableAs());
         try {
-            $response = $elasticsearch->indices()->getAlias($params->toArray())->asArray();
+            $response = Helper::convertToArray($elasticsearch->indices()->getAlias($params->toArray()));
         } catch (ClientResponseException $e) {
             $response = [];
         }

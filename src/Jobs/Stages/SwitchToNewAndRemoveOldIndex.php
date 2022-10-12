@@ -2,6 +2,7 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Get;
@@ -36,7 +37,7 @@ final class SwitchToNewAndRemoveOldIndex
     {
         $source = $this->source;
         $params = Get::anyIndex($source->searchableAs());
-        $response = $elasticsearch->indices()->getAlias($params->toArray())->asArray();
+        $response = Helper::convertToArray($elasticsearch->indices()->getAlias($params->toArray()));
 
         $params = new Update();
         foreach ($response as $indexName => $alias) {

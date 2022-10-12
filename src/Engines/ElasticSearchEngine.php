@@ -8,6 +8,7 @@ use Illuminate\Support\LazyCollection;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Builder as BaseBuilder;
 use Laravel\Scout\Engines\Engine;
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\HitsIteratorAggregate;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Bulk;
@@ -45,7 +46,7 @@ final class ElasticSearchEngine extends Engine
     {
         $params = new Bulk();
         $params->index($models);
-        $response = $this->elasticsearch->bulk($params->toArray())->asArray();
+        $response = Helper::convertToArray($this->elasticsearch->bulk($params->toArray()));
         if (array_key_exists('errors', $response) && $response['errors']) {
             $error = new ServerResponseException(json_encode($response, JSON_PRETTY_PRINT));
             throw new \Exception('Bulk update error', $error->getCode(), $error);
@@ -204,6 +205,6 @@ final class ElasticSearchEngine extends Engine
         $indexName = $builder->index ?: $model->searchableAs();
         $params = new SearchParams($indexName, $searchBody->toArray());
 
-        return $this->elasticsearch->search($params->toArray())->asArray();
+        return Helper::convertToArray($this->elasticsearch->search($params->toArray()));
     }
 }
