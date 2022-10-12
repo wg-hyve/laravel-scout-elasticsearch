@@ -8,6 +8,7 @@ use Illuminate\Support\LazyCollection;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Builder as BaseBuilder;
 use Laravel\Scout\Engines\Engine;
+use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\HitsIteratorAggregate;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Bulk;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Refresh;
@@ -22,17 +23,17 @@ final class ElasticSearchEngine extends Engine
     /**
      * The ElasticSearch client.
      *
-     * @var \Elastic\Elasticsearch\Client
+     * @var ProxyClient
      */
-    protected $elasticsearch;
+    protected ProxyClient $elasticsearch;
 
     /**
      * Create a new engine instance.
      *
-     * @param  \Elastic\Elasticsearch\Client  $elasticsearch
-     * @return void
+     * @param ProxyClient $elasticsearch
+     * @returnvoid
      */
-    public function __construct(\Elastic\Elasticsearch\Client $elasticsearch)
+    public function __construct(ProxyClient $elasticsearch)
     {
         $this->elasticsearch = $elasticsearch;
     }
