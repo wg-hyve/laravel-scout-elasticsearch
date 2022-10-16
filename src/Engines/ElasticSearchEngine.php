@@ -2,6 +2,7 @@
 
 namespace Matchish\ScoutElasticSearch\Engines;
 
+use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\LazyCollection;
@@ -69,7 +70,7 @@ final class ElasticSearchEngine extends Engine
     public function flush($model)
     {
         $indexName = $model->searchableAs();
-        $exist = $this->elasticsearch->indices()->exists(['index' => $indexName])->asBool();
+        $exist = Helper::convertToBool($this->elasticsearch->indices()->exists(['index' => $indexName]));
         if ($exist) {
             $body = (new Search())->addQuery(new MatchAllQuery())->toArray();
             $params = new SearchParams($indexName, $body);

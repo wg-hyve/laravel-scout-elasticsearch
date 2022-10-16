@@ -3,6 +3,7 @@
 namespace Tests\Integration\Jobs\Stages;
 
 use App\Product;
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Jobs\Stages\CleanUp;
 use Matchish\ScoutElasticSearch\Searchable\DefaultImportSourceFactory;
 use stdClass;
@@ -27,8 +28,8 @@ class CleanUpTest extends IntegrationTestCase
 
         $stage = new CleanUp(DefaultImportSourceFactory::from(Product::class));
         $stage->handle($this->elasticsearch);
-        $writeIndexExist = $this->elasticsearch->indices()->exists(['index' => 'products_new'])->asBool();
-        $readIndexExist = $this->elasticsearch->indices()->exists(['index' => 'products_old'])->asBool();
+        $writeIndexExist = Helper::convertToBool($this->elasticsearch->indices()->exists(['index' => 'products_new']));
+        $readIndexExist = Helper::convertToBool($this->elasticsearch->indices()->exists(['index' => 'products_old']));
 
         $this->assertFalse($writeIndexExist);
         $this->assertTrue($readIndexExist);

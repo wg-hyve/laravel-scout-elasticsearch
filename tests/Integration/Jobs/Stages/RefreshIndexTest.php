@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Jobs\Stages;
 
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\Jobs\Stages\RefreshIndex;
 use stdClass;
@@ -39,7 +40,7 @@ final class RefreshIndexTest extends IntegrationTestCase
                 ],
             ],
         ];
-        $response = $this->elasticsearch->search($params)->asArray();
+        $response = Helper::convertToArray($this->elasticsearch->search($params));
         $this->assertEquals(1, $response['hits']['total']['value']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Matchish\ScoutElasticSearch;
 
+use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Client as ElasticsearchClient;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use OpenSearch\Client as OpenSearchClient;

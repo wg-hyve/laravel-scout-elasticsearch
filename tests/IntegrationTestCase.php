@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Elastic\Elasticsearch\Client;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 
 /**
@@ -24,6 +25,11 @@ class IntegrationTestCase extends TestCase
         $this->elasticsearch = $this->app->make(ProxyClient::class);
 
         $this->elasticsearch->indices()->delete(['index' => '_all']);
+    }
+
+    protected function isElasticsearch():bool
+    {
+        return $this->elasticsearch instanceof Client;
     }
 
     protected function getEnvironmentSetUp($app)
