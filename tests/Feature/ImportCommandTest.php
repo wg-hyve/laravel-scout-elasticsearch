@@ -7,7 +7,9 @@ namespace Tests\Feature;
 use App\Book;
 use App\BookWithCustomKey;
 use App\Product;
+use Elastic\Elasticsearch\Client;
 use Illuminate\Support\Facades\Artisan;
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use stdClass;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Tests\IntegrationTestCase;
@@ -142,7 +144,9 @@ final class ImportCommandTest extends IntegrationTestCase
 
         Artisan::call('scout:import');
 
-        $this->assertFalse($this->elasticsearch->indices()->exists(['index' => 'products_old'])->asBool(), 'Old index must be deleted');
+        $result = Helper::convertToBool($this->elasticsearch->indices()->exists(['index' => 'products_old']));
+
+        $this->assertFalse($result, 'Old index must be deleted');
     }
 
     public function test_progress_report()

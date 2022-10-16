@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Jobs\Stages;
 
 use App\Product;
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\Jobs\Stages\SwitchToNewAndRemoveOldIndex;
 use Matchish\ScoutElasticSearch\Searchable\DefaultImportSourceFactory;
@@ -27,9 +28,9 @@ final class SwitchToNewAndRemoveOldIndexTest extends IntegrationTestCase
         $stage = new SwitchToNewAndRemoveOldIndex(DefaultImportSourceFactory::from(Product::class), new Index('products_new'));
         $stage->handle($this->elasticsearch);
 
-        $newIndexExist = $this->elasticsearch->indices()->exists(['index' => 'products_new'])->asBool();
-        $oldIndexExist = $this->elasticsearch->indices()->exists(['index' => 'products_old'])->asBool();
-        $alias = $this->elasticsearch->indices()->getAlias(['index' => 'products_new'])->asArray();
+        $newIndexExist = Helper::convertToBool($this->elasticsearch->indices()->exists(['index' => 'products_new']));
+        $oldIndexExist = Helper::convertToBool($this->elasticsearch->indices()->exists(['index' => 'products_old']));
+        $alias = Helper::convertToArray($this->elasticsearch->indices()->getAlias(['index' => 'products_new']));
 
         $this->assertTrue($newIndexExist);
         $this->assertFalse($oldIndexExist);

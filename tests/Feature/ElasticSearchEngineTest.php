@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Product;
+use Elastic\Elasticsearch\Client;
 use Illuminate\Support\Facades\Artisan;
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Tests\IntegrationTestCase;
 
 final class ElasticSearchEngineTest extends IntegrationTestCase
@@ -22,7 +24,7 @@ final class ElasticSearchEngineTest extends IntegrationTestCase
         Artisan::call('scout:import');
 
         $results = Product::search('Quia', static function ($client, $body) {
-            return $client->search(['index' => 'products', 'body' => $body->toArray()])->asArray();
+            return Helper::convertToArray($client->search(['index' => 'products', 'body' => $body->toArray()]));
         })->raw();
 
         $this->assertIsArray($results);
@@ -41,7 +43,7 @@ final class ElasticSearchEngineTest extends IntegrationTestCase
         Artisan::call('scout:import');
 
         $results = Product::search('iphone', static function ($client, $body) {
-            return $client->search(['index' => 'products', 'body' => $body->toArray()])->asArray();
+            return Helper::convertToArray($client->search(['index' => 'products', 'body' => $body->toArray()]));
         })->raw();
 
         $this->assertIsArray($results);
