@@ -42,9 +42,9 @@ final class ElasticSearchEngine extends Engine
     /**
      * {@inheritdoc}
      */
-    public function update($models)
+    public function update($models, $index = null)
     {
-        $params = new Bulk();
+        $params = new Bulk($index);
         $params->index($models);
         $response = Helper::convertToArray($this->elasticsearch->bulk($params->toArray()));
         if (array_key_exists('errors', $response) && $response['errors']) {

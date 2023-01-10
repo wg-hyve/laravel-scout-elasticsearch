@@ -10,24 +10,23 @@ use Matchish\ScoutElasticSearch\Searchable\ImportSource;
  */
 final class PullFromSource
 {
-    /**
-     * @var ImportSource
-     */
-    private $source;
+    private ImportSource $source;
+    private string $name;
 
     /**
      * @param  ImportSource  $source
      */
-    public function __construct(ImportSource $source)
+    public function __construct(ImportSource $source, string $name)
     {
         $this->source = $source;
+        $this->name = $name;
     }
 
     public function handle(): void
     {
         $results = $this->source->get()->filter->shouldBeSearchable();
         if (! $results->isEmpty()) {
-            $results->first()->searchableUsing()->update($results);
+            $results->first()->searchableUsing()->update($results, $this->name);
         }
     }
 
@@ -45,10 +44,10 @@ final class PullFromSource
      * @param  ImportSource  $source
      * @return Collection
      */
-    public static function chunked(ImportSource $source): Collection
+    public static function chunked(ImportSource $source, string $name): Collection
     {
-        return $source->chunked()->map(function ($chunk) {
-            return new static($chunk);
+        return $source->chunked()->map(function ($chunk) use ($name) {
+            return new static($chunk, $name);
         });
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
-use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Get;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Update;
 use Matchish\ScoutElasticSearch\Searchable\ImportSource;
+use Matchish\ScoutElasticSearch\Engines\Helpers\Index as IndexHelper;
 
 /**
  * @internal
@@ -18,36 +18,29 @@ final class SwitchToNewAndRemoveOldIndex
      * @var ImportSource
      */
     private $source;
-    /**
-     * @var Index
-     */
-    private $index;
+    private string $name;
 
     /**
      * @param  ImportSource  $source
      * @param  Index  $index
      */
-    public function __construct(ImportSource $source, Index $index)
+    public function __construct(ImportSource $source, string $name)
     {
         $this->source = $source;
-        $this->index = $index;
+        $this->name = $name;
     }
 
     public function handle(ProxyClient $elasticsearch): void
     {
-        $source = $this->source;
-        $params = Get::anyIndex($source->searchableAs());
-        $response = Helper::convertToArray($elasticsearch->indices()->getAlias($params->toArray()));
+        $indices = IndexHelper::getList($this->source->searchableAs());
 
         $params = new Update();
-        foreach ($response as $indexName => $alias) {
-            if ($indexName != $this->index->name()) {
-                $params->removeIndex((string) $indexName);
-            } else {
-                $params->add((string) $indexName, $source->searchableAs());
+        foreach ($indices as $index) {
+            if($index === $this->name) {
+                $params->add((string) $index, $this->source->searchableAs());
+                $elasticsearch->indices()->updateAliases($params->toArray());
             }
         }
-        $elasticsearch->indices()->updateAliases($params->toArray());
     }
 
     public function estimate(): int

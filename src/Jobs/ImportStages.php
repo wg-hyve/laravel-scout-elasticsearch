@@ -20,13 +20,14 @@ class ImportStages extends Collection
     public static function fromSource(ImportSource $source)
     {
         $index = Index::fromSource($source);
+        $indexName = $index->name();
 
         return (new self([
-            new CleanUp($source),
-            new CreateWriteIndex($source, $index),
-            PullFromSource::chunked($source),
-            new RefreshIndex($index),
-            new SwitchToNewAndRemoveOldIndex($source, $index),
+            new CreateWriteIndex($index, $indexName),
+            PullFromSource::chunked($source, $indexName),
+            new RefreshIndex($indexName),
+            new SwitchToNewAndRemoveOldIndex($source, $indexName),
+            new CleanUp($source, $indexName),
         ]))->flatten()->filter();
     }
 }

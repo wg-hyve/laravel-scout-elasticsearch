@@ -3,7 +3,6 @@
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
-use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Refresh;
 
 /**
@@ -11,24 +10,16 @@ use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Refresh;
  */
 final class RefreshIndex
 {
-    /**
-     * @var Index
-     */
-    private $index;
+    private string $index;
 
-    /**
-     * RefreshIndex constructor.
-     *
-     * @param  Index  $index
-     */
-    public function __construct(Index $index)
+    public function __construct(string $index)
     {
         $this->index = $index;
     }
 
     public function handle(ProxyClient $elasticsearch): void
     {
-        $params = new Refresh($this->index->name());
+        $params = new Refresh($this->index);
         $elasticsearch->indices()->refresh($params->toArray());
     }
 

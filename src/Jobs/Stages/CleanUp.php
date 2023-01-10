@@ -2,10 +2,8 @@
 
 namespace Matchish\ScoutElasticSearch\Jobs\Stages;
 
-use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
-use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Alias\Get as GetAliasParams;
+use Matchish\ScoutElasticSearch\Engines\Helpers\Index as IndexHelper;
 use Matchish\ScoutElasticSearch\ElasticSearch\Params\Indices\Delete as DeleteIndexParams;
 use Matchish\ScoutElasticSearch\Searchable\ImportSource;
 
@@ -18,30 +16,27 @@ final class CleanUp
      * @var ImportSource
      */
     private $source;
+    private string $name;
 
     /**
      * @param  ImportSource  $source
      */
-    public function __construct(ImportSource $source)
+    public function __construct(ImportSource $source, string $name)
     {
         $this->source = $source;
+        $this->name = $name;
     }
 
     public function handle(ProxyClient $elasticsearch): void
     {
-        $source = $this->source;
-        $params = GetAliasParams::anyIndex($source->searchableAs());
-        try {
-            $response = Helper::convertToArray($elasticsearch->indices()->getAlias($params->toArray()));
-        } catch (ClientResponseException $e) {
-            $response = [];
-        }
-        foreach ($response as $indexName => $data) {
-            foreach ($data['aliases'] as $alias => $config) {
-                if (array_key_exists('is_write_index', $config) && $config['is_write_index']) {
-                    $params = new DeleteIndexParams((string) $indexName);
+        $indices = IndexHelper::getList($this->source->searchableAs());
+
+        if(count($indices) > 1) {
+
+            foreach ($indices as $index) {
+                if($index !== $this->name) {
+                    $params = new DeleteIndexParams((string) $index);
                     $elasticsearch->indices()->delete($params->toArray());
-                    continue 2;
                 }
             }
         }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Jobs\Stages;
 
 use App\Product;
+use Matchish\ScoutElasticSearch\Creator\Helper;
 use Matchish\ScoutElasticSearch\Creator\ProxyClient;
 use Matchish\ScoutElasticSearch\ElasticSearch\Index;
 use Matchish\ScoutElasticSearch\Jobs\Stages\CreateWriteIndex;
@@ -19,7 +20,7 @@ final class CreateWriteIndexTest extends IntegrationTestCase
         $elasticsearch = $this->app->make(ProxyClient::class);
         $stage = new CreateWriteIndex(DefaultImportSourceFactory::from(Product::class), Index::fromSource(DefaultImportSourceFactory::from(Product::class)));
         $stage->handle($elasticsearch);
-        $response = $elasticsearch->indices()->getAlias(['index' => '*', 'name' => 'products'])->asArray();
+        $response = Helper::convertToArray($elasticsearch->indices()->getAlias(['index' => '*', 'name' => 'products']));
         $this->assertTrue($this->containsWriteIndex($response, 'products'));
     }
 
